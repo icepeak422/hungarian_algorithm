@@ -1,7 +1,7 @@
 #include <iostream>
 #include "hungarian.h"
 
-using namespace std
+using namespace std;
 int main(){
 	vector<vector<int>> cost_matrix={{82,83,69,92},
 									 {77,37,49,92},
