@@ -1,86 +1,21 @@
-#include <algorithm>
+// Example program
 #include <iostream>
+#include <string>
 #include <vector>
+#include <algorithm>
+#include <climits>
 #include "hungarian.h"
 
+using namespace std;
 
 void print_matrix(vector<vector<int>> matrix){
-	for(unsigned int x=0;x<cost_matrix.size();x++){
-        for(unsigned int y=0;y<cost_matrix[0].size();y++)  {
+	for(unsigned int x=0;x<matrix.size();x++){
+        for(unsigned int y=0;y<matrix[0].size();y++)  {
             cout<<matrix[x][y]<<" ";  
         }
 	cout<<endl;  
 	}
 }
-// the process to slove the problem
-int hungarian::solve(hungarian &hun){
-	int cost=0;
-	bool solution=false;
-	int num_row = hun->cost_matrix.size();
-	int num_col = hun->cost_matrix[0].size();
-
-	// at first we just want to implement the algorithm on square cost matrix
-	if ( num_row!=num_col ) {
-        throw invalid_argument( "cost matrix should be square" );
-    }
-	step1(hun->cost_matrix);
-	step2(hun->cost_matrix);
-	step3(hun->cost_matrix,solution,hun->uncovered_row,hun->uncovered_col);
-	while(solution==false){
-		step4(hun->cost_matrix,hun->uncovered_row,hun->uncovered_col);
-		step3(hun->cost_matrix,solution,hun->uncovered_row,hun->uncovered_col);
-	}
-
-	vector<int> assignment (cost_matrix.size(),0);
-	//i-th element this assignment vector represents worker i do assignment[i] job
-	assignment = assign(&cost_matrix);
-	for (unsigned int i=0;i<assignment.size();++i){
-		cost+=hungarian.OG_cost_matrix[i][assignment[i]];
-	}
-	return cost;
-}
-
-// find all the minimum in each row, and substract it.
-void step1(vector<vector<int>>& cost_matrix){
-	vector<int> cur_row;
-	int min_in_row =0;
-	for (unsigned int i = 0; i < cost_matrix.size(); ++i){
-		cur_row= cost_matrix[i];
-		sort(cur_row.begin(),cur_row.end());
-		min_in_row = cur_row[0];
-		for (unsigned  int j = 0; j < cost_matrix[0].size(); ++j){
-			cost_matrix[i][j]=cost_matrix[i][j]-min_in_row;
-		}
-	}
-	cur_row.clear();
-	return;
-}
-
-// find all the minimum in each column, and substract it.
-void step2(vector<vector<int>>& cost_matrix){
-	vector<int> cur_col;
-	int min_in_col =0;
-	for (unsigned int j = 0; j < cost_matrix[0].size(); ++j){
-		for (unsigned  int i = 0; i < cost_matrix.size(); ++i){
-			if(cost_matrix[i][j]==0){
-				cur_col.clear();
-				break;
-			}
-			cur_col.push_back(cost_matrix[i][j]);
-		}
-		if(cur_col.size()){
-			sort(cur_col.begin(),cur_col.end());
-			min_in_col = cur_col[0];
-			for (unsigned  int i = 0; i < cost_matrix.size(); ++i){
-				cost_matrix[i][j]=cost_matrix[i][j]-min_in_col;
-			}
-		}
-		
-	}
-	cur_col.clear();
-	return;
-}
-
 // find the minimal lines to cover all the zeros
 // this is the most challange part 
 void step3(vector<vector<int>>& cost_matrix, bool &solution,vector<int>& uncovered_row,vector<int>& uncovered_col,vector<int>& covered_row,vector<int>& covered_col){
@@ -194,8 +129,20 @@ void step4(vector<vector<int>>& cost_matrix, vector<int>& uncovered_row,vector<i
 	}
 	return;	
 }
-
-//find the solution return the assignment in assigment vector
-vector<int> assign(vector<vector<int>>& cost_matrix){
-	/**to be implement**/
+int main()
+{
+  vector<vector<int>> cost_matrix={{82,0,69,92},
+									 {77,37,49,92},
+									 {11,0,0,86},
+									 {8,0,98,23}};
+ hungarian hun(cost_matrix);
+ bool solution = false;
+ step3(hun.CUR_cost_matrix,solution,hun.uncovered_row,hun.uncovered_col,hun.covered_row,hun.covered_col);
+ while(!solution){
+ 	 step4(hun.CUR_cost_matrix,hun.uncovered_row,hun.uncovered_col,hun.covered_row,hun.covered_col);
+ 	print_matrix(hun.CUR_cost_matrix);
+ 	step3(hun.CUR_cost_matrix,solution,hun.uncovered_row,hun.uncovered_col,hun.covered_row,hun.covered_col);
+ }
+ return 0;
 }
+

@@ -9,7 +9,7 @@ int main(){
 									 {8,9,98,23}};
 
 	hungarian hun(cost_matrix);
-	int min_cost = hun.slove(cost_matrix);
+	int min_cost = hun.slove(hun);
 	cout<<"the min cost is:"<<min_cost<<endl;
 
 	return 0;
