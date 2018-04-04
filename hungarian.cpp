@@ -195,7 +195,36 @@ void step4(vector<vector<int>>& cost_matrix, vector<int>& uncovered_row,vector<i
 	return;	
 }
 
+bool help_assign(int worker,vector<int> &left,hungarian &hun,vector<int> each_ret, vector<int> ret){
+	bool assigned = false;
+	if(worker==hun.CUR_cost_matrix.size()){
+		return true;
+	}
+	for (int j=0;j<left.size();j++){
+		if(hun->CUR_cost_matrix[worker][left[j]]==0){
+			int assigned_position = left[j];
+			left.erase(left.begin()+j);
+			assigned = help_assign(worker+1,left,hun,each_ret,ret);
+			if(assigned&&each_ret.size()==hun.CUR_cost_matrix.size()){
+				ret.push_back(each_ret);
+			}else{
+				left.push_back(assigned_position);
+			}
+			each_ret.pop_back();
+		} 
+	}
+	return assigned;
+}
 //find the solution return the assignment in assigment vector
-vector<int> assign(vector<vector<int>>& cost_matrix){
+vector<vector<int>> assign(hungarian &hun){
 	/**to be implement**/
+	vector<vector<int>> ret;
+	vector<int> left;
+	for(int i=0;i<SIZE;i++){
+		left[i]=i;
+	}
+	int worker = 0;
+	vector<int> each_ret;
+	bool assigned=help_assign(worker,left,hun,each_ret,ret);
+	return ret;	
 }
